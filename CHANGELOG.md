@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-02-16
+
+### Added
+
+- Frontend application entry point and global Tailwind theme styles
+- Router setup for dashboard, new project, and project detail routes
+- Typed API client for projects and audits endpoints
+- Shared frontend TypeScript types and utility helpers
+- App bootstrap with React Query and TanStack Router providers
+
 ## [0.5.0] - 2026-02-16
 
 ### Added
