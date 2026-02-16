@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: audit-rgaa-mongo
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-admin123}
+      MONGO_INITDB_DATABASE: audit-rgaa
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - audit-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: audit-rgaa-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      MONGODB_URI: mongodb://${MONGO_USER:-admin}:${MONGO_PASSWORD:-admin123}@mongodb:27017/audit-rgaa?authSource=admin
+    depends_on:
+      - mongodb
+    networks:
+      - audit-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: audit-rgaa-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - audit-network
+
+volumes:
+  mongo-data:
+
+networks:
+  audit-network:
+    driver: bridge

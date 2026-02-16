@@ -1,0 +1,28 @@
+{
+  "name": "audit-rgaa-backend",
+  "version": "0.2.0",
+  "description": "Backend API pour l'audit d'accessibilité RGAA",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@axe-core/puppeteer": "^4.10.1",
+    "axe-core": "^4.10.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.1",
+    "@fastify/cors": "^10.0.2",
+    "mongoose": "^8.9.5",
+    "pdfkit": "^0.16.0",
+    "puppeteer": "^24.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/pdfkit": "^0.13.8",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
