@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.0] - 2026-02-16
 
-### Added
+***Added***
 
 - Reusable UI component set based on Radix + Tailwind (Accordion, Tabs, Progress)
 - Form primitives (Button, Input, Textarea, Label)
@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.0] - 2026-02-16
 
-### Added
+***Added***
 
 - Frontend application entry point and global Tailwind theme styles
 - Router setup for dashboard, new project, and project detail routes
@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.0] - 2026-02-16
 
-### Added
+***Added***
 
 - Audit service with Puppeteer-based SPA-aware page crawler (max 20 pages)
 - axe-core accessibility analysis with WCAG 2.1 A/AA rules
@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - 2026-02-16
 
-### Added
+***Added***
 
 - REST API routes for project CRUD (GET, POST, PUT, DELETE /api/projects)
 - REST API routes for audit lifecycle (create, list, get, status polling, delete)
@@ -45,14 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0] - 2026-02-16
 
-### Added
+***Added***
 
 - Mongoose Project model with name, description, URL, auth config, and additional pages
 - Mongoose Audit model with criteria results, page audit data, summary statistics, and raw violations
 
 ## [0.2.0] - 2026-02-16
 
-### Added
+***Added***
 
 - Backend TypeScript type definitions for projects, audits, and RGAA criteria
 - MongoDB connection configuration
@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2026-02-16
 
-### Added
+***Added***
 
 - Project `.gitignore` for Node.js, build outputs, and environment files
 - `.env.example` with default configuration values
