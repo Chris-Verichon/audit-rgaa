@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-02-16
+
+### Added
+
+- Audit service with Puppeteer-based SPA-aware page crawler (max 20 pages)
+- axe-core accessibility analysis with WCAG 2.1 A/AA rules
+- Automatic mapping of axe-core violations to 106 RGAA criteria
+- Interactive authentication support with manual confirmation flow
+- PDF report generation with compliance rate, criteria details, and methodology note
+
+## [0.4.0] - 2026-02-16
+
+### Added
+
+- REST API routes for project CRUD (GET, POST, PUT, DELETE /api/projects)
+- REST API routes for audit lifecycle (create, list, get, status polling, delete)
+- Audit authentication confirmation endpoint (POST /api/audits/:id/confirm-auth)
+- PDF report download endpoint (GET /api/audits/:id/pdf)
+
+## [0.3.0] - 2026-02-16
+
+### Added
+
+- Mongoose Project model with name, description, URL, auth config, and additional pages
+- Mongoose Audit model with criteria results, page audit data, summary statistics, and raw violations
+
 ## [0.2.0] - 2026-02-16
 
 ### Added
