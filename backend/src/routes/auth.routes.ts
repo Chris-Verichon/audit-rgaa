@@ -9,7 +9,7 @@ import {
 } from "../services/auth.service.js";
 
 export async function authRoutes(app: FastifyInstance) {
-  // POST /api/auth/register — Créer un compte
+  // POST /api/auth/register — Create an account
   app.post<{ Body: RegisterInput }>(
     "/api/auth/register",
     async (request, reply) => {
@@ -59,7 +59,7 @@ export async function authRoutes(app: FastifyInstance) {
     }
   );
 
-  // POST /api/auth/login — Se connecter
+  // POST /api/auth/login — Log in
   app.post<{ Body: LoginInput }>(
     "/api/auth/login",
     async (request, reply) => {
@@ -86,7 +86,7 @@ export async function authRoutes(app: FastifyInstance) {
     }
   );
 
-  // GET /api/auth/me — Récupérer l'utilisateur connecté
+  // GET /api/auth/me — Get the currently logged-in user
   app.get(
     "/api/auth/me",
     { preHandler: [authenticate] },

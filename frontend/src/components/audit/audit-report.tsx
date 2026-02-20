@@ -23,7 +23,7 @@ interface AuditReportProps {
 
 export function AuditReport({ audit }: AuditReportProps) {
   const { t, locale } = useI18n();
-  // Grouper les critères par thématique
+  // Group criteria by theme
   const groupedCriteria = new Map<string, typeof audit.criteria>();
   for (const criteria of audit.criteria) {
     const group = groupedCriteria.get(criteria.thematique) || [];
@@ -37,7 +37,7 @@ export function AuditReport({ audit }: AuditReportProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header du rapport */}
+      {/* Report header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-2xl font-bold">{t.AuditReport.title}</h2>
@@ -60,7 +60,7 @@ export function AuditReport({ audit }: AuditReportProps) {
         </Button>
       </div>
 
-      {/* Résumé */}
+      {/* Summary */}
       {audit.summary && (
         <AuditSummaryCard
           summary={audit.summary}
@@ -68,7 +68,7 @@ export function AuditReport({ audit }: AuditReportProps) {
         />
       )}
 
-      {/* Contenu en tabs */}
+      {/* Tabbed content */}
       <Tabs defaultValue="criteria" className="space-y-4">
         <TabsList>
           <TabsTrigger value="criteria">{t.AuditReport.rgaaCriteria}</TabsTrigger>
@@ -77,7 +77,7 @@ export function AuditReport({ audit }: AuditReportProps) {
           </TabsTrigger>
         </TabsList>
 
-        {/* Onglet Critères */}
+        {/* Criteria tab */}
         <TabsContent value="criteria">
           <Accordion type="multiple" className="space-y-2">
             {Array.from(groupedCriteria.entries()).map(
@@ -93,7 +93,7 @@ export function AuditReport({ audit }: AuditReportProps) {
           </Accordion>
         </TabsContent>
 
-        {/* Onglet Violations */}
+        {/* Violations tab */}
         <TabsContent value="violations">
           <div className="space-y-4">
             {audit.rawViolations && audit.rawViolations.length > 0 ? (

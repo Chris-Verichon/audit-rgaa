@@ -31,7 +31,7 @@ export function useAuditStatus(auditId: string, enabled: boolean) {
     enabled: !!auditId && enabled,
     refetchInterval: (query) => {
       const status = query.state.data?.status;
-      // Continuer le polling tant que l'audit n'est pas terminé
+      // Continue polling as long as the audit is not finished
       if (status === "pending" || status === "running" || status === "waiting-auth") {
         return 2000;
       }

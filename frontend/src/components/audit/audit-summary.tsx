@@ -54,7 +54,7 @@ export function AuditSummaryCard({
 
   return (
     <div className="space-y-6">
-      {/* Taux de conformité principal */}
+      {/* Main compliance rate */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">{t.AuditSummary.complianceRate}</CardTitle>
@@ -78,7 +78,7 @@ export function AuditSummaryCard({
         </CardContent>
       </Card>
 
-      {/* Détails */}
+      {/* Details */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card>
           <CardContent className="pt-6">
@@ -147,7 +147,7 @@ export function AuditSummaryCard({
         </Card>
       </div>
 
-      {/* Liste des pages auditées */}
+      {/* List of audited pages */}
       {pagesAudited && pagesAudited.length > 0 && (
         <Card>
           <CardHeader className="pb-2">

@@ -6,7 +6,7 @@ import { generatePDF } from "../services/pdf.service.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 
 export async function auditRoutes(app: FastifyInstance) {
-  // Toutes les routes audits nécessitent une authentification
+  // All audit routes require authentication
   app.addHook("preHandler", authenticate);
   // POST /api/projects/:projectId/audits — Start a new audit for a project
   app.post<{ Params: { projectId: string } }>(

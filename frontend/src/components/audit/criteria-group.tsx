@@ -90,7 +90,7 @@ export function CriteriaGroup({
                 </div>
                 <p className="text-sm mt-1 text-foreground">{crit.critere}</p>
 
-                {/* Détails des erreurs */}
+                {/* Error details */}
                 {crit.details.length > 0 && (
                   <div className="mt-2 space-y-1">
                     {crit.details.slice(0, 5).map((detail, i) => (

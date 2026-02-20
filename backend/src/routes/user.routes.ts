@@ -9,10 +9,10 @@ import {
 import type { UserRole } from "../types/index.js";
 
 export async function userRoutes(app: FastifyInstance) {
-  // Toutes les routes users nécessitent une authentification
+  // All user routes require authentication
   app.addHook("preHandler", authenticate);
 
-  // GET /api/users — Liste de tous les utilisateurs (admin uniquement)
+  // GET /api/users — List all users (admin only)
   app.get(
     "/api/users",
     { preHandler: [requireRole("admin")] },
@@ -22,7 +22,7 @@ export async function userRoutes(app: FastifyInstance) {
     }
   );
 
-  // GET /api/users/:id — Détail d'un utilisateur (admin uniquement)
+  // GET /api/users/:id — User detail (admin only)
   app.get<{ Params: { id: string } }>(
     "/api/users/:id",
     { preHandler: [requireRole("admin")] },
@@ -35,7 +35,7 @@ export async function userRoutes(app: FastifyInstance) {
     }
   );
 
-  // PUT /api/users/:id/role — Modifier le rôle d'un utilisateur (admin uniquement)
+  // PUT /api/users/:id/role — Update a user's role (admin only)
   app.put<{ Params: { id: string }; Body: { role: UserRole } }>(
     "/api/users/:id/role",
     { preHandler: [requireRole("admin")] },
@@ -48,7 +48,7 @@ export async function userRoutes(app: FastifyInstance) {
           .send({ error: "Le rôle doit être 'admin' ou 'user'" });
       }
 
-      // Empêcher un admin de se retirer son propre rôle admin
+      // Prevent an admin from revoking their own admin role
       if (
         request.params.id === request.currentUser!.id &&
         role !== "admin"
@@ -67,12 +67,12 @@ export async function userRoutes(app: FastifyInstance) {
     }
   );
 
-  // DELETE /api/users/:id — Supprimer un utilisateur (admin uniquement)
+  // DELETE /api/users/:id — Delete a user (admin only)
   app.delete<{ Params: { id: string } }>(
     "/api/users/:id",
     { preHandler: [requireRole("admin")] },
     async (request, reply) => {
-      // Empêcher un admin de se supprimer lui-même
+      // Prevent an admin from deleting themselves
       if (request.params.id === request.currentUser!.id) {
         return reply
           .status(400)

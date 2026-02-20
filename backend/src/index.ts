@@ -26,7 +26,7 @@ async function start() {
     secret: process.env.JWT_SECRET || "audit-rgaa-secret-key-change-in-production",
   });
 
-  // Connexion BDD
+  // Database connection
   await connectDB();
 
   // Routes
