@@ -18,6 +18,8 @@ const projectSchema = new Schema<ProjectDocument>(
     url: { type: String, required: true, trim: true },
     auth: { type: authConfigSchema, default: undefined },
     pages: [{ type: String, trim: true }],
+    createdBy: { type: String, ref: "User" },
+    allowedUsers: [{ type: String, ref: "User" }],
   },
   {
     timestamps: true,

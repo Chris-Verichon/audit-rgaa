@@ -3,9 +3,32 @@ import type {
   CreateProjectInput,
   Audit,
   AuditListItem,
+  User,
+  LoginInput,
+  RegisterInput,
+  AuthResponse,
+  UserRole,
 } from "@/types";
 
 const API_BASE = "/api";
+
+// ─── TOKEN MANAGEMENT ───
+
+const TOKEN_KEY = "audit-rgaa-token";
+
+export function getToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function setToken(token: string): void {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+export function removeToken(): void {
+  localStorage.removeItem(TOKEN_KEY);
+}
+
+// ─── FETCH WRAPPER ───
 
 async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
   const headers: Record<string, string> = { ...options?.headers as Record<string, string> };
@@ -15,10 +38,22 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
     headers["Content-Type"] = headers["Content-Type"] ?? "application/json";
   }
 
+  // Automatically attach JWT token
+  const token = getToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE}${url}`, {
     ...options,
     headers,
   });
+
+  if (response.status === 401) {
+    removeToken();
+    window.location.href = "/login";
+    throw new Error("Session expirée, veuillez vous reconnecter");
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: "Erreur inconnue" }));
@@ -26,6 +61,67 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
   }
 
   return response.json();
+}
+
+// ─── AUTH ───
+
+export async function login(data: LoginInput): Promise<AuthResponse> {
+  const result = await fetchJSON<AuthResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  setToken(result.token);
+  return result;
+}
+
+export async function register(data: RegisterInput): Promise<AuthResponse> {
+  const result = await fetchJSON<AuthResponse>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  setToken(result.token);
+  return result;
+}
+
+export async function getMe(): Promise<User> {
+  return fetchJSON<User>("/auth/me");
+}
+
+export function logout(): void {
+  removeToken();
+  window.location.href = "/login";
+}
+
+// ─── USERS (admin) ───
+
+export async function getUsers(): Promise<User[]> {
+  return fetchJSON<User[]>("/users");
+}
+
+export async function updateUserRole(
+  userId: string,
+  role: UserRole
+): Promise<User> {
+  return fetchJSON<User>(`/users/${userId}/role`, {
+    method: "PUT",
+    body: JSON.stringify({ role }),
+  });
+}
+
+export async function deleteUser(userId: string): Promise<void> {
+  await fetchJSON(`/users/${userId}`, { method: "DELETE" });
+}
+
+// ─── PROJECT PERMISSIONS ───
+
+export async function updateProjectAllowedUsers(
+  projectId: string,
+  allowedUsers: string[]
+): Promise<Project> {
+  return fetchJSON<Project>(`/projects/${projectId}`, {
+    method: "PUT",
+    body: JSON.stringify({ allowedUsers }),
+  });
 }
 
 // ─── PROJECTS ───
