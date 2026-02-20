@@ -5,7 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.10.0] - 2026-02-16
+## [0.11.0] - 20-02-2026
+
+***Added***
+
+- User model with nom, prénom, email, organisation (entreprise/particulier), and role (admin/user)
+- Authentication service with bcrypt password hashing and JWT tokens (7-day expiry)
+- Auth middleware for JWT verification and role-based access control
+- Auth routes: POST /api/auth/register, POST /api/auth/login, GET /api/auth/me
+- User management routes (admin only): GET /api/users, PUT /api/users/:id/role, DELETE /api/users/:id
+- Project ownership (createdBy) and user habilitation (allowedUsers) fields
+- Role-based project filtering: admin sees all projects, user sees own + habilitated projects
+- Access control on project CRUD operations (owner or admin only)
+- Frontend login and register pages with form validation
+- AuthProvider context with automatic JWT token management and session persistence
+- Protected route guards with automatic redirect to /login
+- AuthLayout (root) and authenticated Layout with route nesting
+- Header with user avatar, name, admin badge, and logout button
+- Admin-only "Utilisateurs" navigation link
+- User management page (admin): user list with stats, role toggle, and delete
+- Project detail: habilitation section to grant/revoke user access per project
+- First registered user is automatically assigned admin role
+
+## [0.10.0] - 16-02-2026
 
 ***Added***
 
@@ -14,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Audit report UI with tabs for RGAA criteria and detected violations
 - Criteria grouping and summary components with compliance metrics
 
-## [0.9.0] - 2026-02-16
+## [0.9.0] - 16-02-2026
 
 ***Added***
 
@@ -23,14 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New Project page with full project creation form
 - Project card and project form components with validation and auth/page options
 
-## [0.8.0] - 2026-02-16
+## [0.8.0] - 16-02-2026
 
 ***Added***
 
 - Application header component with brand and primary navigation links
 - Global layout wrapper with header, routed main content area, and toast notifications
 
-## [0.7.0] - 2026-02-16
+## [0.7.0] - 16-02-2026
 
 ***Added***
 
@@ -39,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display primitives (Card, Badge) with variants
 - Shared class variance patterns via CVA for consistent styling
 
-## [0.6.0] - 2026-02-16
+## [0.6.0] - 16-02-2026
 
 ***Added***
 
@@ -49,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Shared frontend TypeScript types and utility helpers
 - App bootstrap with React Query and TanStack Router providers
 
-## [0.5.0] - 2026-02-16
+## [0.5.0] - 16-02-2026
 
 ***Added***
 
@@ -59,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive authentication support with manual confirmation flow
 - PDF report generation with compliance rate, criteria details, and methodology note
 
-## [0.4.0] - 2026-02-16
+## [0.4.0] - 16-02-2026
 
 ***Added***
 
@@ -68,14 +90,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Audit authentication confirmation endpoint (POST /api/audits/:id/confirm-auth)
 - PDF report download endpoint (GET /api/audits/:id/pdf)
 
-## [0.3.0] - 2026-02-16
+## [0.3.0] - 16-02-2026
 
 ***Added***
 
 - Mongoose Project model with name, description, URL, auth config, and additional pages
 - Mongoose Audit model with criteria results, page audit data, summary statistics, and raw violations
 
-## [0.2.0] - 2026-02-16
+## [0.2.0] - 16-02-2026
 
 ***Added***
 
@@ -84,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RGAA 4.1.2 criteria dataset (106 criteria) with axe-core WCAG mapping
 - Fastify server entry point with CORS and health check endpoint
 
-## [0.1.0] - 2026-02-16
+## [0.1.0] - 16-02-2026
 
 ***Added***
 
