@@ -1,7 +1,10 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import fastifyJwt from "@fastify/jwt";
 import dotenv from "dotenv";
 import { connectDB } from "./config/database.js";
+import { authRoutes } from "./routes/auth.routes.js";
+import { userRoutes } from "./routes/user.routes.js";
 import { projectRoutes } from "./routes/project.routes.js";
 import { auditRoutes } from "./routes/audit.routes.js";
 
@@ -18,10 +21,17 @@ async function start() {
     methods: ["GET", "POST", "PUT", "DELETE"],
   });
 
+  // JWT
+  await app.register(fastifyJwt, {
+    secret: process.env.JWT_SECRET || "audit-rgaa-secret-key-change-in-production",
+  });
+
   // Connexion BDD
   await connectDB();
 
   // Routes
+  await app.register(authRoutes);
+  await app.register(userRoutes);
   await app.register(projectRoutes);
   await app.register(auditRoutes);
 

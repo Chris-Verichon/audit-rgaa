@@ -3,6 +3,42 @@ export interface IAuthConfig {
   loginUrl?: string;
 }
 
+// ─── USER & AUTH ───
+
+export type UserRole = "admin" | "user";
+export type OrganisationType = "entreprise" | "particulier";
+
+export interface IUser {
+  _id?: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  password: string;
+  organisation: OrganisationType;
+  role: UserRole;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface IUserPublic {
+  id: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  organisation: OrganisationType;
+  role: UserRole;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface JwtPayload {
+  id: string;
+  email: string;
+  role: UserRole;
+}
+
+// ─── PROJECT ───
+
 export interface IProject {
   _id?: string;
   name: string;
@@ -10,6 +46,8 @@ export interface IProject {
   url: string;
   auth?: IAuthConfig;
   pages?: string[];
+  createdBy?: string;
+  allowedUsers?: string[];
   createdAt?: Date;
   updatedAt?: Date;
 }
