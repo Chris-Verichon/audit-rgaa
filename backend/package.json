@@ -1,6 +1,6 @@
 {
   "name": "audit-rgaa-backend",
-  "version": "0.10.0",
+  "version": "0.12.0",
   "description": "Backend API pour l'audit d'accessibilité RGAA",
   "main": "dist/index.js",
   "scripts": {

@@ -3,10 +3,10 @@ import { Project } from "../models/project.model.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 
 export async function projectRoutes(app: FastifyInstance) {
-  // Toutes les routes projets nécessitent une authentification
+  // All project routes require authentication
   app.addHook("preHandler", authenticate);
 
-  // GET /api/projects — Liste des projets (admin: tous, user: ses projets + habilités)
+  // GET /api/projects — List projects (admin: all, user: own + authorized)
   app.get("/api/projects", async (request, reply) => {
     const user = request.currentUser!;
 
@@ -25,7 +25,7 @@ export async function projectRoutes(app: FastifyInstance) {
     return reply.send(projects);
   });
 
-  // GET /api/projects/:id — Détail d'un projet (avec vérification d'accès)
+  // GET /api/projects/:id — Project detail (with access verification)
   app.get<{ Params: { id: string } }>(
     "/api/projects/:id",
     async (request, reply) => {
@@ -47,7 +47,7 @@ export async function projectRoutes(app: FastifyInstance) {
     }
   );
 
-  // POST /api/projects — Créer un nouveau projet
+  // POST /api/projects — Create a new project
   app.post<{
     Body: {
       name: string;
@@ -68,7 +68,7 @@ export async function projectRoutes(app: FastifyInstance) {
         .send({ error: "Nom, description et URL sont requis" });
     }
 
-    // Validation basique de l'URL
+    // Basic URL validation
     try {
       new URL(url);
     } catch {
@@ -88,7 +88,7 @@ export async function projectRoutes(app: FastifyInstance) {
     return reply.status(201).send(project);
   });
 
-  // PUT /api/projects/:id — Modifier un projet
+  // PUT /api/projects/:id — Update a project
   app.put<{
     Params: { id: string };
     Body: {
@@ -119,7 +119,7 @@ export async function projectRoutes(app: FastifyInstance) {
     return reply.send(project);
   });
 
-  // DELETE /api/projects/:id — Supprimer un projet
+  // DELETE /api/projects/:id — Delete a project
   app.delete<{ Params: { id: string } }>(
     "/api/projects/:id",
     async (request, reply) => {

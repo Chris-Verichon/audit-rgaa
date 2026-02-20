@@ -3,9 +3,11 @@ import { useProjects } from "@/hooks/use-projects";
 import { ProjectCard } from "@/components/projects/project-card";
 import { Button } from "@/components/ui/button";
 import { Plus, Loader2, FolderOpen } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 export function DashboardPage() {
   const { data: projects, isLoading, error } = useProjects();
+  const { t } = useI18n();
 
   if (isLoading) {
     return (
@@ -19,7 +21,7 @@ export function DashboardPage() {
     return (
       <div className="text-center py-20">
         <p className="text-destructive">
-          Erreur lors du chargement des projets : {error.message}
+          {t.Dashboard.errorLoading(error.message)}
         </p>
       </div>
     );
@@ -29,15 +31,15 @@ export function DashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-3xl font-bold">{t.Dashboard.title}</h1>
           <p className="text-muted-foreground">
-            Gérez vos projets et audits d'accessibilité RGAA
+            {t.Dashboard.subtitle}
           </p>
         </div>
         <Link to="/projects/new">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            Nouveau projet
+            {t.Dashboard.newProject}
           </Button>
         </Link>
       </div>
@@ -52,15 +54,15 @@ export function DashboardPage() {
         <div className="text-center py-20 space-y-4">
           <FolderOpen className="h-16 w-16 mx-auto text-muted-foreground/50" />
           <div>
-            <h3 className="text-lg font-semibold">Aucun projet</h3>
+            <h3 className="text-lg font-semibold">{t.Dashboard.noProjects}</h3>
             <p className="text-muted-foreground">
-              Créez votre premier projet pour lancer un audit RGAA
+              {t.Dashboard.noProjectsDescription}
             </p>
           </div>
           <Link to="/projects/new">
             <Button>
               <Plus className="h-4 w-4 mr-2" />
-              Créer un projet
+              {t.Dashboard.createProject}
             </Button>
           </Link>
         </div>

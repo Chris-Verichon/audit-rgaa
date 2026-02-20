@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Trash2, ArrowRight } from "lucide-react";
 import { useDeleteProject } from "@/hooks/use-projects";
+import { useI18n } from "@/hooks/use-i18n";
 import { toast } from "sonner";
 
 interface ProjectCardProps {
@@ -19,13 +20,14 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project }: ProjectCardProps) {
   const deleteProject = useDeleteProject();
+  const { t, locale } = useI18n();
 
   const handleDelete = async () => {
-    if (!confirm("Supprimer ce projet et tous ses audits ?")) return;
+    if (!confirm(t.ProjectCard.confirmDelete)) return;
 
     try {
       await deleteProject.mutateAsync(project.id);
-      toast.success("Projet supprimé");
+      toast.success(t.ProjectCard.toastDeleted);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -55,7 +57,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           {project.url}
         </a>
         <p className="text-xs text-muted-foreground mt-2">
-          Créé le {new Date(project.createdAt).toLocaleDateString("fr-FR")}
+          {t.ProjectCard.createdOn} {new Date(project.createdAt).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US")}
         </p>
       </CardContent>
 
@@ -68,12 +70,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
           className="text-destructive hover:text-destructive"
         >
           <Trash2 className="h-4 w-4 mr-1" />
-          Supprimer
+          {t.ProjectCard.delete}
         </Button>
 
         <Link to="/projects/$projectId" params={{ projectId: project.id }}>
           <Button variant="default" size="sm">
-            Voir le projet
+            {t.ProjectCard.viewProject}
             <ArrowRight className="h-4 w-4 ml-1" />
           </Button>
         </Link>

@@ -65,21 +65,21 @@ const indexRoute = createRoute({
   component: DashboardPage,
 });
 
-// Nouveau projet
+// New project
 const newProjectRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/projects/new",
   component: NewProjectPage,
 });
 
-// Détail projet
+// Project detail
 const projectDetailRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/projects/$projectId",
   component: ProjectDetailPage,
 });
 
-// Gestion utilisateurs (admin)
+// User management (admin)
 const userManagementRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/users",

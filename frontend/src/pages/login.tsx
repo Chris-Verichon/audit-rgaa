@@ -13,11 +13,13 @@ import {
 } from "@/components/ui/card";
 import { login } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/hooks/use-i18n";
 import { Loader2, CheckCircle } from "lucide-react";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +28,7 @@ export function LoginPage() {
     e.preventDefault();
 
     if (!email.trim() || !password.trim()) {
-      toast.error("Email et mot de passe requis");
+      toast.error(t.Login.validationRequired);
       return;
     }
 
@@ -34,17 +36,17 @@ export function LoginPage() {
     try {
       const result = await login({ email: email.trim(), password });
       setUser(result.user);
-      toast.success(`Bienvenue ${result.user.prenom} !`);
+      toast.success(t.Login.toastWelcome(result.user.prenom));
       navigate({ to: "/" });
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la connexion");
+      toast.error(error.message || t.Login.toastError);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -57,19 +59,19 @@ export function LoginPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Connexion</CardTitle>
+            <CardTitle>{t.Login.title}</CardTitle>
             <CardDescription>
-              Connectez-vous pour accéder à vos projets d'audit
+              {t.Login.description}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t.Login.emailLabel}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="vous@exemple.com"
+                  placeholder={t.Login.emailPlaceholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -78,11 +80,11 @@ export function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
+                <Label htmlFor="password">{t.Login.passwordLabel}</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t.Login.passwordPlaceholder}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -98,21 +100,21 @@ export function LoginPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Connexion...
+                    {t.Login.submitting}
                   </>
                 ) : (
-                  "Se connecter"
+                  t.Login.submit
                 )}
               </Button>
             </form>
 
             <div className="mt-4 text-center text-sm text-muted-foreground">
-              Pas encore de compte ?{" "}
+              {t.Login.noAccount}{" "}
               <Link
                 to="/register"
                 className="text-primary font-medium hover:underline"
               >
-                Créer un compte
+                {t.Login.createAccount}
               </Link>
             </div>
           </CardContent>

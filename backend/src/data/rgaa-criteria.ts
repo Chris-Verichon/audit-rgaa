@@ -22,7 +22,7 @@ import type { RGAACriteria } from "../types/index.js";
  * 13. Consultation
  */
 export const RGAA_CRITERIA: RGAACriteria[] = [
-  // ─── THÉMATIQUE 1 : IMAGES ───
+  // ─── THEME 1: IMAGES ───
   {
     id: "1.1",
     thematique: "Images",
@@ -96,7 +96,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.9.5"],
   },
 
-  // ─── THÉMATIQUE 2 : CADRES ───
+  // ─── THEME 2: FRAMES ───
   {
     id: "2.1",
     thematique: "Cadres",
@@ -114,7 +114,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["2.2.1"],
   },
 
-  // ─── THÉMATIQUE 3 : COULEURS ───
+  // ─── THEME 3: COLORS ───
   {
     id: "3.1",
     thematique: "Couleurs",
@@ -140,7 +140,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["3.3.1", "3.3.2", "3.3.3", "3.3.4"],
   },
 
-  // ─── THÉMATIQUE 4 : MULTIMÉDIA ───
+  // ─── THEME 4: MULTIMEDIA ───
   {
     id: "4.1",
     thematique: "Multimédia",
@@ -246,7 +246,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["4.13.1", "4.13.2"],
   },
 
-  // ─── THÉMATIQUE 5 : TABLEAUX ───
+  // ─── THEME 5: TABLES ───
   {
     id: "5.1",
     thematique: "Tableaux",
@@ -312,7 +312,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["5.8.1"],
   },
 
-  // ─── THÉMATIQUE 6 : LIENS ───
+  // ─── THEME 6: LINKS ───
   {
     id: "6.1",
     thematique: "Liens",
@@ -330,7 +330,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["6.2.1"],
   },
 
-  // ─── THÉMATIQUE 7 : SCRIPTS ───
+  // ─── THEME 7: SCRIPTS ───
   {
     id: "7.1",
     thematique: "Scripts",
@@ -372,7 +372,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["7.5.1", "7.5.2", "7.5.3"],
   },
 
-  // ─── THÉMATIQUE 8 : ÉLÉMENTS OBLIGATOIRES ───
+  // ─── THEME 8: MANDATORY ELEMENTS ───
   {
     id: "8.1",
     thematique: "Éléments obligatoires",
@@ -454,7 +454,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["8.10.1", "8.10.2"],
   },
 
-  // ─── THÉMATIQUE 9 : STRUCTURATION DE L'INFORMATION ───
+  // ─── THEME 9: INFORMATION STRUCTURE ───
   {
     id: "9.1",
     thematique: "Structuration de l'information",
@@ -488,7 +488,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["9.4.1", "9.4.2"],
   },
 
-  // ─── THÉMATIQUE 10 : PRÉSENTATION DE L'INFORMATION ───
+  // ─── THEME 10: INFORMATION PRESENTATION ───
   {
     id: "10.1",
     thematique: "Présentation de l'information",
@@ -602,7 +602,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["10.14.1", "10.14.2"],
   },
 
-  // ─── THÉMATIQUE 11 : FORMULAIRES ───
+  // ─── THEME 11: FORMS ───
   {
     id: "11.1",
     thematique: "Formulaires",
@@ -708,7 +708,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["11.13.1"],
   },
 
-  // ─── THÉMATIQUE 12 : NAVIGATION ───
+  // ─── THEME 12: NAVIGATION ───
   {
     id: "12.1",
     thematique: "Navigation",
@@ -798,7 +798,7 @@ export const RGAA_CRITERIA: RGAACriteria[] = [
     tests: ["12.11.1"],
   },
 
-  // ─── THÉMATIQUE 13 : CONSULTATION ───
+  // ─── THEME 13: CONSULTATION ───
   {
     id: "13.1",
     thematique: "Consultation",

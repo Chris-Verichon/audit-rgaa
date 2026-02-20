@@ -15,13 +15,15 @@ import {
 } from "@/components/ui/card";
 import { Download, ExternalLink } from "lucide-react";
 import { getAuditPDFUrl } from "@/lib/api";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface AuditReportProps {
   audit: Audit;
 }
 
 export function AuditReport({ audit }: AuditReportProps) {
-  // Grouper les critères par thématique
+  const { t, locale } = useI18n();
+  // Group criteria by theme
   const groupedCriteria = new Map<string, typeof audit.criteria>();
   for (const criteria of audit.criteria) {
     const group = groupedCriteria.get(criteria.thematique) || [];
@@ -35,14 +37,14 @@ export function AuditReport({ audit }: AuditReportProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header du rapport */}
+      {/* Report header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Rapport d'audit RGAA</h2>
+          <h2 className="text-2xl font-bold">{t.AuditReport.title}</h2>
           <p className="text-sm text-muted-foreground">
-            Audit réalisé le{" "}
+            {t.AuditReport.auditDate}{" "}
             {audit.completedAt
-              ? new Date(audit.completedAt).toLocaleDateString("fr-FR", {
+              ? new Date(audit.completedAt).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
@@ -54,11 +56,11 @@ export function AuditReport({ audit }: AuditReportProps) {
         </div>
         <Button onClick={handleDownloadPDF} className="gap-2">
           <Download className="h-4 w-4" />
-          Télécharger PDF
+          {t.AuditReport.downloadPdf}
         </Button>
       </div>
 
-      {/* Résumé */}
+      {/* Summary */}
       {audit.summary && (
         <AuditSummaryCard
           summary={audit.summary}
@@ -66,16 +68,16 @@ export function AuditReport({ audit }: AuditReportProps) {
         />
       )}
 
-      {/* Contenu en tabs */}
+      {/* Tabbed content */}
       <Tabs defaultValue="criteria" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="criteria">Critères RGAA</TabsTrigger>
+          <TabsTrigger value="criteria">{t.AuditReport.rgaaCriteria}</TabsTrigger>
           <TabsTrigger value="violations">
-            Violations détectées ({audit.rawViolations?.length || 0})
+            {t.AuditReport.violationsDetected(audit.rawViolations?.length || 0)}
           </TabsTrigger>
         </TabsList>
 
-        {/* Onglet Critères */}
+        {/* Criteria tab */}
         <TabsContent value="criteria">
           <Accordion type="multiple" className="space-y-2">
             {Array.from(groupedCriteria.entries()).map(
@@ -91,7 +93,7 @@ export function AuditReport({ audit }: AuditReportProps) {
           </Accordion>
         </TabsContent>
 
-        {/* Onglet Violations */}
+        {/* Violations tab */}
         <TabsContent value="violations">
           <div className="space-y-4">
             {audit.rawViolations && audit.rawViolations.length > 0 ? (
@@ -119,7 +121,7 @@ export function AuditReport({ audit }: AuditReportProps) {
                     </p>
                     {violation.pageUrl && (
                       <p className="text-xs text-blue-600 mt-1">
-                        📄 Page : {new URL(violation.pageUrl).pathname}
+                        📄 {t.AuditReport.page} : {new URL(violation.pageUrl).pathname}
                       </p>
                     )}
                   </CardHeader>
@@ -131,7 +133,7 @@ export function AuditReport({ audit }: AuditReportProps) {
                       className="inline-flex items-center gap-1 text-xs text-primary hover:underline mb-3"
                     >
                       <ExternalLink className="h-3 w-3" />
-                      En savoir plus
+                      {t.AuditReport.learnMore}
                     </a>
                     <div className="space-y-2">
                       {violation.nodes.slice(0, 5).map((node, i) => (
@@ -156,7 +158,7 @@ export function AuditReport({ audit }: AuditReportProps) {
             ) : (
               <Card>
                 <CardContent className="pt-6 text-center text-muted-foreground">
-                  Aucune violation détectée 🎉
+                  {t.AuditReport.noViolations}
                 </CardContent>
               </Card>
             )}

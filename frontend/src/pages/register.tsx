@@ -13,12 +13,14 @@ import {
 } from "@/components/ui/card";
 import { register } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/hooks/use-i18n";
 import { Loader2, CheckCircle } from "lucide-react";
 import type { OrganisationType } from "@/types";
 
 export function RegisterPage() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const { t } = useI18n();
 
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
@@ -32,17 +34,17 @@ export function RegisterPage() {
     e.preventDefault();
 
     if (!nom.trim() || !prenom.trim() || !email.trim() || !password) {
-      toast.error("Tous les champs sont requis");
+      toast.error(t.Register.validationAllFieldsRequired);
       return;
     }
 
     if (password.length < 6) {
-      toast.error("Le mot de passe doit contenir au moins 6 caractères");
+      toast.error(t.Register.validationPasswordMinLength);
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas");
+      toast.error(t.Register.validationPasswordsMismatch);
       return;
     }
 
@@ -56,17 +58,17 @@ export function RegisterPage() {
         organisation,
       });
       setUser(result.user);
-      toast.success(`Bienvenue ${result.user.prenom} ! Votre compte a été créé.`);
+      toast.success(t.Register.toastWelcome(result.user.prenom));
       navigate({ to: "/" });
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la création du compte");
+      toast.error(error.message || t.Register.toastError);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4 py-8">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -79,29 +81,29 @@ export function RegisterPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Créer un compte</CardTitle>
+            <CardTitle>{t.Register.title}</CardTitle>
             <CardDescription>
-              Inscrivez-vous pour commencer vos audits d'accessibilité
+              {t.Register.description}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="prenom">Prénom</Label>
+                  <Label htmlFor="prenom">{t.Register.firstNameLabel}</Label>
                   <Input
                     id="prenom"
-                    placeholder="Jean"
+                    placeholder={t.Register.firstNamePlaceholder}
                     value={prenom}
                     onChange={(e) => setPrenom(e.target.value)}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="nom">Nom</Label>
+                  <Label htmlFor="nom">{t.Register.lastNameLabel}</Label>
                   <Input
                     id="nom"
-                    placeholder="Dupont"
+                    placeholder={t.Register.lastNamePlaceholder}
                     value={nom}
                     onChange={(e) => setNom(e.target.value)}
                     required
@@ -110,11 +112,11 @@ export function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t.Register.emailLabel}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="jean.dupont@exemple.com"
+                  placeholder={t.Register.emailPlaceholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -123,7 +125,7 @@ export function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="organisation">Organisation</Label>
+                <Label htmlFor="organisation">{t.Register.organisationLabel}</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
@@ -134,7 +136,7 @@ export function RegisterPage() {
                         : "border-gray-200 text-gray-600 hover:border-gray-300"
                     }`}
                   >
-                    🏢 Entreprise
+                    {t.Register.enterprise}
                   </button>
                   <button
                     type="button"
@@ -145,33 +147,33 @@ export function RegisterPage() {
                         : "border-gray-200 text-gray-600 hover:border-gray-300"
                     }`}
                   >
-                    👤 Particulier
+                    {t.Register.individual}
                   </button>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
+                <Label htmlFor="password">{t.Register.passwordLabel}</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t.Register.passwordPlaceholder}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="new-password"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Minimum 6 caractères
+                  {t.Register.passwordMinChars}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+                <Label htmlFor="confirmPassword">{t.Register.confirmPasswordLabel}</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t.Register.confirmPasswordPlaceholder}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -187,21 +189,21 @@ export function RegisterPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Création du compte...
+                    {t.Register.submitting}
                   </>
                 ) : (
-                  "Créer mon compte"
+                  t.Register.submit
                 )}
               </Button>
             </form>
 
             <div className="mt-4 text-center text-sm text-muted-foreground">
-              Déjà un compte ?{" "}
+              {t.Register.alreadyHaveAccount}{" "}
               <Link
                 to="/login"
                 className="text-primary font-medium hover:underline"
               >
-                Se connecter
+                {t.Register.login}
               </Link>
             </div>
           </CardContent>

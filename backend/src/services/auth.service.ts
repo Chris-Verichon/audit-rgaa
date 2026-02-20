@@ -38,7 +38,7 @@ export async function registerUser(
 
   const hashedPassword = await hashPassword(input.password);
 
-  // Le premier utilisateur créé devient automatiquement admin
+  // The first registered user automatically becomes admin
   const userCount = await User.countDocuments();
   const role: UserRole = userCount === 0 ? "admin" : "user";
 

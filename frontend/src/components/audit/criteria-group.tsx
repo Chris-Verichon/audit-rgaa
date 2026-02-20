@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, MinusCircle, HelpCircle } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface CriteriaGroupProps {
   thematique: string;
@@ -27,16 +28,16 @@ function getResultIcon(result: CriteriaAudit["result"]) {
   }
 }
 
-function getResultBadge(result: CriteriaAudit["result"]) {
+function getResultBadge(result: CriteriaAudit["result"], t: any) {
   switch (result) {
     case "conforme":
-      return <Badge variant="success">Conforme</Badge>;
+      return <Badge variant="success">{t.CriteriaGroup.conforme}</Badge>;
     case "non-conforme":
-      return <Badge variant="destructive">Non conforme</Badge>;
+      return <Badge variant="destructive">{t.CriteriaGroup.nonConforme}</Badge>;
     case "non-applicable":
-      return <Badge variant="outline">N/A</Badge>;
+      return <Badge variant="outline">{t.CriteriaGroup.nonApplicable}</Badge>;
     default:
-      return <Badge variant="warning">Non testé</Badge>;
+      return <Badge variant="warning">{t.CriteriaGroup.notTested}</Badge>;
   }
 }
 
@@ -45,6 +46,7 @@ export function CriteriaGroup({
   criteria,
   index,
 }: CriteriaGroupProps) {
+  const { t } = useI18n();
   const conforme = criteria.filter((c) => c.result === "conforme").length;
   const nonConforme = criteria.filter(
     (c) => c.result === "non-conforme"
@@ -60,9 +62,9 @@ export function CriteriaGroup({
           <div>
             <p className="font-semibold">{thematique}</p>
             <p className="text-xs text-muted-foreground">
-              {conforme} conforme{conforme > 1 ? "s" : ""} ·{" "}
-              {nonConforme} non conforme{nonConforme > 1 ? "s" : ""} ·{" "}
-              {criteria.length} critère{criteria.length > 1 ? "s" : ""}
+              {t.CriteriaGroup.compliant(conforme)} ·{" "}
+              {t.CriteriaGroup.nonCompliant(nonConforme)} ·{" "}
+              {t.CriteriaGroup.criteria(criteria.length)}
             </p>
           </div>
         </div>
@@ -81,14 +83,14 @@ export function CriteriaGroup({
                   <span className="font-mono text-sm font-medium text-primary">
                     {crit.id}
                   </span>
-                  {getResultBadge(crit.result)}
+                  {getResultBadge(crit.result, t)}
                   <Badge variant="outline" className="text-xs">
                     {crit.level}
                   </Badge>
                 </div>
                 <p className="text-sm mt-1 text-foreground">{crit.critere}</p>
 
-                {/* Détails des erreurs */}
+                {/* Error details */}
                 {crit.details.length > 0 && (
                   <div className="mt-2 space-y-1">
                     {crit.details.slice(0, 5).map((detail, i) => (
@@ -101,7 +103,7 @@ export function CriteriaGroup({
                     ))}
                     {crit.details.length > 5 && (
                       <p className="text-xs text-muted-foreground italic">
-                        ... et {crit.details.length - 5} autre(s)
+                        {t.CriteriaGroup.andOthers(crit.details.length - 5)}
                       </p>
                     )}
                   </div>
