@@ -13,11 +13,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useCreateProject } from "@/hooks/use-projects";
+import { useI18n } from "@/hooks/use-i18n";
 import { Loader2, Lock, Plus, X } from "lucide-react";
 
 export function ProjectForm() {
   const navigate = useNavigate();
   const createProject = useCreateProject();
+  const { t } = useI18n();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -47,14 +49,14 @@ export function ProjectForm() {
     e.preventDefault();
 
     if (!name.trim() || !description.trim() || !url.trim()) {
-      toast.error("Tous les champs sont requis");
+      toast.error(t.ProjectForm.validationAllFieldsRequired);
       return;
     }
 
     try {
       new URL(url);
     } catch {
-      toast.error("URL invalide. Vérifiez le format (ex: https://example.com)");
+      toast.error(t.ProjectForm.validationInvalidUrl);
       return;
     }
 
@@ -72,10 +74,10 @@ export function ProjectForm() {
         ...(additionalPages.length > 0 && { pages: additionalPages }),
       });
 
-      toast.success("Projet créé avec succès !");
+      toast.success(t.ProjectForm.toastSuccess);
       navigate({ to: "/projects/$projectId", params: { projectId: project.id } });
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la création du projet");
+      toast.error(error.message || t.ProjectForm.toastError);
     }
   };
 
@@ -83,18 +85,18 @@ export function ProjectForm() {
     <div className="max-w-2xl mx-auto space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Nouveau projet</CardTitle>
+          <CardTitle>{t.ProjectForm.title}</CardTitle>
           <CardDescription>
-            Créez un projet pour lancer un audit d'accessibilité RGAA
+            {t.ProjectForm.description}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Nom du projet</Label>
+              <Label htmlFor="name">{t.ProjectForm.projectNameLabel}</Label>
               <Input
                 id="name"
-                placeholder="Mon site web"
+                placeholder={t.ProjectForm.projectNamePlaceholder}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -102,10 +104,10 @@ export function ProjectForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t.ProjectForm.descriptionLabel}</Label>
               <Textarea
                 id="description"
-                placeholder="Description du site à auditer..."
+                placeholder={t.ProjectForm.descriptionPlaceholder}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
@@ -114,31 +116,29 @@ export function ProjectForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="url">URL principale</Label>
+              <Label htmlFor="url">{t.ProjectForm.urlLabel}</Label>
               <Input
                 id="url"
                 type="url"
-                placeholder="https://example.com"
+                placeholder={t.ProjectForm.urlPlaceholder}
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 required
               />
               <p className="text-xs text-muted-foreground">
-                L'URL de la page d'accueil du site (après connexion si
-                authentification activée)
+                {t.ProjectForm.urlDescription}
               </p>
             </div>
 
             {/* ─── PAGES ADDITIONNELLES ─── */}
             <div className="space-y-3">
-              <Label>Pages à auditer (optionnel)</Label>
+              <Label>{t.ProjectForm.additionalPagesLabel}</Label>
               <p className="text-xs text-muted-foreground">
-                L'outil découvrira automatiquement les liens internes, mais vous
-                pouvez aussi ajouter des URLs spécifiques à auditer.
+                {t.ProjectForm.additionalPagesDescription}
               </p>
               <div className="flex gap-2">
                 <Input
-                  placeholder="/ma-page ou https://example.com/page"
+                  placeholder={t.ProjectForm.additionalPagesPlaceholder}
                   value={newPage}
                   onChange={(e) => setNewPage(e.target.value)}
                   onKeyDown={(e) => {
@@ -187,7 +187,7 @@ export function ProjectForm() {
                     htmlFor="auth-toggle"
                     className="cursor-pointer font-medium"
                   >
-                    Authentification requise
+                    {t.ProjectForm.authRequired}
                   </Label>
                 </div>
                 <input
@@ -202,23 +202,21 @@ export function ProjectForm() {
               {authEnabled && (
                 <div className="space-y-3 pt-2">
                   <p className="text-xs text-muted-foreground">
-                    🔐 Au lancement de l'audit, un navigateur s'ouvrira sur la
-                    page de login. Connectez-vous manuellement, puis confirmez
-                    dans l'application pour continuer l'audit.
+                    {t.ProjectForm.authDescription}
                   </p>
                   <div className="space-y-2">
                     <Label htmlFor="loginUrl">
-                      URL de la page de login (optionnel)
+                      {t.ProjectForm.loginUrlLabel}
                     </Label>
                     <Input
                       id="loginUrl"
                       type="url"
-                      placeholder="https://example.com/login"
+                      placeholder={t.ProjectForm.loginUrlPlaceholder}
                       value={loginUrl}
                       onChange={(e) => setLoginUrl(e.target.value)}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Si vide, l'URL principale sera utilisée
+                      {t.ProjectForm.loginUrlDescription}
                     </p>
                   </div>
                 </div>
@@ -233,10 +231,10 @@ export function ProjectForm() {
               {createProject.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Création en cours...
+                  {t.ProjectForm.submitting}
                 </>
               ) : (
-                "Créer le projet"
+                t.ProjectForm.submit
               )}
             </Button>
           </form>

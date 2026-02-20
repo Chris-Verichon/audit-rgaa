@@ -20,8 +20,10 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import type { User } from "@/types";
+import { useI18n } from "@/hooks/use-i18n";
 
 function UserRow({ user, currentUserId }: { user: User; currentUserId: string }) {
+  const { t, locale } = useI18n();
   const updateRole = useUpdateUserRole();
   const deleteUserMutation = useDeleteUser();
 
@@ -32,7 +34,7 @@ function UserRow({ user, currentUserId }: { user: User; currentUserId: string })
     try {
       await updateRole.mutateAsync({ userId: user.id, role: newRole });
       toast.success(
-        `${user.prenom} ${user.nom} est maintenant ${newRole === "admin" ? "administrateur" : "utilisateur"}`
+        t.UserManagement.roleUpdated(`${user.prenom} ${user.nom}`, newRole)
       );
     } catch (error: any) {
       toast.error(error.message);
@@ -42,14 +44,14 @@ function UserRow({ user, currentUserId }: { user: User; currentUserId: string })
   const handleDelete = async () => {
     if (
       !confirm(
-        `Supprimer le compte de ${user.prenom} ${user.nom} ? Cette action est irréversible.`
+        t.UserManagement.deleteConfirm(`${user.prenom} ${user.nom}`)
       )
     )
       return;
 
     try {
       await deleteUserMutation.mutateAsync(user.id);
-      toast.success("Utilisateur supprimé");
+      toast.success(t.UserManagement.userDeleted);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -70,17 +72,17 @@ function UserRow({ user, currentUserId }: { user: User; currentUserId: string })
             {user.role === "admin" ? (
               <Badge variant="default" className="gap-1 text-xs">
                 <ShieldCheck className="h-3 w-3" />
-                Admin
+                {t.Common.admin}
               </Badge>
             ) : (
               <Badge variant="outline" className="gap-1 text-xs">
                 <UserIcon className="h-3 w-3" />
-                Utilisateur
+                {t.Common.user}
               </Badge>
             )}
             {isCurrentUser && (
               <Badge variant="secondary" className="text-xs">
-                Vous
+                {t.Common.you}
               </Badge>
             )}
           </div>
@@ -91,10 +93,10 @@ function UserRow({ user, currentUserId }: { user: User; currentUserId: string })
             ) : (
               <UserIcon className="h-3 w-3" />
             )}
-            {user.organisation === "entreprise" ? "Entreprise" : "Particulier"}
+            {user.organisation === "entreprise" ? t.Common.enterprise : t.Common.individual}
             {" · "}
-            Inscrit le{" "}
-            {new Date(user.createdAt).toLocaleDateString("fr-FR")}
+            {t.UserManagement.registeredOn}{" "}
+            {new Date(user.createdAt).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US")}
           </p>
         </div>
       </div>
@@ -113,7 +115,7 @@ function UserRow({ user, currentUserId }: { user: User; currentUserId: string })
             ) : (
               <Shield className="h-3 w-3" />
             )}
-            {user.role === "admin" ? "Retirer admin" : "Rendre admin"}
+            {user.role === "admin" ? t.UserManagement.removeAdmin : t.UserManagement.makeAdmin}
           </Button>
           <Button
             variant="ghost"
@@ -136,6 +138,7 @@ function UserRow({ user, currentUserId }: { user: User; currentUserId: string })
 
 export function UserManagementPage() {
   const { user: currentUser } = useAuth();
+  const { t } = useI18n();
   const { data: users, isLoading, error } = useUsers();
 
   if (isLoading) {
@@ -150,7 +153,7 @@ export function UserManagementPage() {
     return (
       <div className="text-center py-20">
         <p className="text-destructive">
-          Erreur : {error.message}
+          {t.UserManagement.error(error.message)}
         </p>
       </div>
     );
@@ -164,10 +167,10 @@ export function UserManagementPage() {
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <Users className="h-8 w-8" />
-          Gestion des utilisateurs
+          {t.UserManagement.title}
         </h1>
         <p className="text-muted-foreground">
-          Gérez les comptes et les rôles des utilisateurs
+          {t.UserManagement.subtitle}
         </p>
       </div>
 
@@ -179,7 +182,7 @@ export function UserManagementPage() {
               <div>
                 <p className="text-2xl font-bold">{users?.length || 0}</p>
                 <p className="text-xs text-muted-foreground">
-                  Total utilisateurs
+                  {t.UserManagement.totalUsers}
                 </p>
               </div>
             </div>
@@ -192,7 +195,7 @@ export function UserManagementPage() {
               <ShieldCheck className="h-5 w-5 text-green-500" />
               <div>
                 <p className="text-2xl font-bold">{admins.length}</p>
-                <p className="text-xs text-muted-foreground">Administrateurs</p>
+                <p className="text-xs text-muted-foreground">{t.UserManagement.administrators}</p>
               </div>
             </div>
           </CardContent>
@@ -204,7 +207,7 @@ export function UserManagementPage() {
               <UserIcon className="h-5 w-5 text-gray-500" />
               <div>
                 <p className="text-2xl font-bold">{regularUsers.length}</p>
-                <p className="text-xs text-muted-foreground">Utilisateurs</p>
+                <p className="text-xs text-muted-foreground">{t.UserManagement.users}</p>
               </div>
             </div>
           </CardContent>
@@ -213,9 +216,9 @@ export function UserManagementPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Tous les utilisateurs</CardTitle>
+          <CardTitle>{t.UserManagement.allUsers}</CardTitle>
           <CardDescription>
-            {users?.length || 0} compte(s) enregistré(s)
+            {t.UserManagement.accountsRegistered(users?.length || 0)}
           </CardDescription>
         </CardHeader>
         <CardContent>

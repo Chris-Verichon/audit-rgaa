@@ -16,6 +16,7 @@ import {
   Globe,
   AlertTriangle,
 } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface AuditSummaryCardProps {
   summary: AuditSummary;
@@ -26,6 +27,7 @@ export function AuditSummaryCard({
   summary,
   pagesAudited,
 }: AuditSummaryCardProps) {
+  const { t } = useI18n();
   const {
     total,
     conforme,
@@ -55,7 +57,7 @@ export function AuditSummaryCard({
       {/* Taux de conformité principal */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Taux de conformité</CardTitle>
+          <CardTitle className="text-lg">{t.AuditSummary.complianceRate}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
@@ -69,8 +71,7 @@ export function AuditSummaryCard({
                 indicatorClassName={progressColor}
               />
               <p className="text-sm text-muted-foreground mt-1">
-                {conforme} critères conformes sur {total - nonApplicable}{" "}
-                applicables
+                {t.AuditSummary.criteriaCompliantOf(conforme, total - nonApplicable)}
               </p>
             </div>
           </div>
@@ -88,7 +89,7 @@ export function AuditSummaryCard({
                   {pagesCount || 0}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Pages auditées
+                  {t.AuditSummary.pagesAudited}
                 </p>
               </div>
             </div>
@@ -101,7 +102,7 @@ export function AuditSummaryCard({
               <CheckCircle className="h-5 w-5 text-green-500" />
               <div>
                 <p className="text-2xl font-bold text-green-600">{conforme}</p>
-                <p className="text-xs text-muted-foreground">Conformes</p>
+                <p className="text-xs text-muted-foreground">{t.AuditSummary.compliant}</p>
               </div>
             </div>
           </CardContent>
@@ -113,7 +114,7 @@ export function AuditSummaryCard({
               <XCircle className="h-5 w-5 text-red-500" />
               <div>
                 <p className="text-2xl font-bold text-red-600">{nonConforme}</p>
-                <p className="text-xs text-muted-foreground">Non conformes</p>
+                <p className="text-xs text-muted-foreground">{t.AuditSummary.nonCompliant}</p>
               </div>
             </div>
           </CardContent>
@@ -127,7 +128,7 @@ export function AuditSummaryCard({
                 <p className="text-2xl font-bold text-gray-500">
                   {nonApplicable}
                 </p>
-                <p className="text-xs text-muted-foreground">Non applicables</p>
+                <p className="text-xs text-muted-foreground">{t.AuditSummary.nonApplicable}</p>
               </div>
             </div>
           </CardContent>
@@ -139,7 +140,7 @@ export function AuditSummaryCard({
               <HelpCircle className="h-5 w-5 text-yellow-500" />
               <div>
                 <p className="text-2xl font-bold text-yellow-600">{nonTeste}</p>
-                <p className="text-xs text-muted-foreground">Non testés</p>
+                <p className="text-xs text-muted-foreground">{t.AuditSummary.notTested}</p>
               </div>
             </div>
           </CardContent>
@@ -152,7 +153,7 @@ export function AuditSummaryCard({
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              Pages auditées ({pagesAudited.length})
+              {t.AuditSummary.pagesAuditedTitle(pagesAudited.length)}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -180,17 +181,16 @@ export function AuditSummaryCard({
                       <>
                         {page.violationsCount > 0 && (
                           <Badge variant="destructive" className="text-xs">
-                            {page.violationsCount} violation
-                            {page.violationsCount > 1 ? "s" : ""}
+                            {t.AuditSummary.violations(page.violationsCount)}
                           </Badge>
                         )}
                         <Badge variant="success" className="text-xs">
-                          {page.passesCount} OK
+                          {t.AuditSummary.ok(page.passesCount)}
                         </Badge>
                       </>
                     ) : (
                       <Badge variant="destructive" className="text-xs">
-                        Erreur
+                        {t.AuditSummary.error}
                       </Badge>
                     )}
                   </div>

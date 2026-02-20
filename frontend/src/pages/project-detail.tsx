@@ -11,6 +11,7 @@ import {
 } from "@/hooks/use-audits";
 import { useUsers, useUpdateProjectPermissions } from "@/hooks/use-users";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/hooks/use-i18n";
 import { AuditReport } from "@/components/audit/audit-report";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,41 +37,41 @@ import {
   UserMinus,
 } from "lucide-react";
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, t }: { status: string; t: any }) {
   switch (status) {
     case "completed":
       return (
         <Badge variant="success" className="gap-1">
           <CheckCircle className="h-3 w-3" />
-          Terminé
+          {t.ProjectDetail.statusCompleted}
         </Badge>
       );
     case "running":
       return (
         <Badge variant="default" className="gap-1">
           <Loader2 className="h-3 w-3 animate-spin" />
-          En cours
+          {t.ProjectDetail.statusRunning}
         </Badge>
       );
     case "waiting-auth":
       return (
         <Badge variant="warning" className="gap-1">
           <Lock className="h-3 w-3" />
-          Authentification
+          {t.ProjectDetail.statusWaitingAuth}
         </Badge>
       );
     case "pending":
       return (
         <Badge variant="warning" className="gap-1">
           <Clock className="h-3 w-3" />
-          En attente
+          {t.ProjectDetail.statusPending}
         </Badge>
       );
     case "error":
       return (
         <Badge variant="destructive" className="gap-1">
           <XCircle className="h-3 w-3" />
-          Erreur
+          {t.ProjectDetail.statusError}
         </Badge>
       );
     default:
@@ -85,6 +86,7 @@ export function ProjectDetailPage() {
   const startAudit = useStartAudit();
   const confirmAuth = useConfirmAuth();
   const { user: currentUser, isAdmin } = useAuth();
+  const { t, locale } = useI18n();
   const { data: allUsers } = useUsers();
   const updatePermissions = useUpdateProjectPermissions();
 
@@ -105,10 +107,10 @@ export function ProjectDetailPage() {
       setRunningAuditId(null);
 
       if (auditStatusData.status === "completed") {
-        toast.success("Audit terminé !");
+        toast.success(t.ProjectDetail.auditCompleted);
       } else {
         toast.error(
-          `Erreur : ${auditStatusData.errorMessage || "Erreur inconnue"}`
+          t.ProjectDetail.auditError(auditStatusData.errorMessage || "")
         );
       }
     }
@@ -122,9 +124,9 @@ export function ProjectDetailPage() {
     try {
       const result = await startAudit.mutateAsync(projectId);
       setRunningAuditId(result.auditId);
-      toast.info("Audit lancé ! Cela peut prendre quelques instants...");
+      toast.info(t.ProjectDetail.auditStarted);
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors du lancement de l'audit");
+      toast.error(error.message || t.ProjectDetail.auditStartError);
     }
   };
 
@@ -139,10 +141,10 @@ export function ProjectDetailPage() {
   if (!project) {
     return (
       <div className="text-center py-20">
-        <p className="text-destructive">Projet introuvable</p>
+        <p className="text-destructive">{t.ProjectDetail.notFound}</p>
         <Link to="/">
           <Button variant="link" className="mt-4">
-            Retour au dashboard
+            {t.ProjectDetail.backToDashboard}
           </Button>
         </Link>
       </div>
@@ -154,7 +156,7 @@ export function ProjectDetailPage() {
       <Link to="/">
         <Button variant="ghost" size="sm" className="gap-1">
           <ArrowLeft className="h-4 w-4" />
-          Retour
+          {t.ProjectDetail.back}
         </Button>
       </Link>
 
@@ -178,12 +180,12 @@ export function ProjectDetailPage() {
               {project.auth?.enabled && (
                 <p className="inline-flex items-center gap-1 text-xs text-muted-foreground mt-1 ml-3">
                   <Lock className="h-3 w-3" />
-                  Authentification configurée
+                  {t.ProjectDetail.authConfigured}
                 </p>
               )}
               {project.pages && project.pages.length > 0 && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  {project.pages.length} page(s) additionnelle(s) configurée(s)
+                  {t.ProjectDetail.additionalPages(project.pages.length)}
                 </p>
               )}
             </div>
@@ -195,12 +197,12 @@ export function ProjectDetailPage() {
               {startAudit.isPending || runningAuditId ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  {runningAuditId ? "Audit en cours..." : "Lancement..."}
+                  {runningAuditId ? t.ProjectDetail.auditRunning : t.ProjectDetail.launching}
                 </>
               ) : (
                 <>
                   <Play className="h-4 w-4" />
-                  Lancer un audit
+                  {t.ProjectDetail.startAudit}
                 </>
               )}
             </Button>
@@ -215,22 +217,21 @@ export function ProjectDetailPage() {
               <LogIn className="h-8 w-8 text-amber-600 flex-shrink-0" />
               <div className="flex-1 space-y-2">
                 <p className="font-medium text-amber-900">
-                  Authentification requise
+                  {t.ProjectDetail.authRequired}
                 </p>
                 <p className="text-sm text-amber-700">
-                  Un navigateur s'est ouvert. Connectez-vous sur le site, puis
-                  cliquez sur le bouton ci-dessous pour continuer l'audit.
+                  {t.ProjectDetail.authRequiredDescription}
                 </p>
                 <Button
                   onClick={async () => {
                     try {
                       await confirmAuth.mutateAsync(runningAuditId);
                       toast.success(
-                        "Authentification confirmée ! L'audit continue..."
+                        t.ProjectDetail.authConfirmed
                       );
                     } catch (error: any) {
                       toast.error(
-                        error.message || "Erreur lors de la confirmation"
+                        error.message || t.ProjectDetail.authConfirmError
                       );
                     }
                   }}
@@ -241,12 +242,12 @@ export function ProjectDetailPage() {
                   {confirmAuth.isPending ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Confirmation...
+                      {t.ProjectDetail.confirming}
                     </>
                   ) : (
                     <>
                       <CheckCircle className="h-4 w-4" />
-                      J'ai terminé la connexion
+                      {t.ProjectDetail.authConfirmButton}
                     </>
                   )}
                 </Button>
@@ -262,10 +263,9 @@ export function ProjectDetailPage() {
             <div className="flex items-center gap-3">
               <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
               <div>
-                <p className="font-medium text-blue-900">Audit en cours...</p>
+                <p className="font-medium text-blue-900">{t.ProjectDetail.auditInProgress}</p>
                 <p className="text-sm text-blue-700">
-                  Découverte des pages et analyse de l'accessibilité.
-                  Cela peut prendre quelques minutes.
+                  {t.ProjectDetail.auditInProgressDescription}
                 </p>
               </div>
             </div>
@@ -275,7 +275,7 @@ export function ProjectDetailPage() {
 
       {!auditsLoading && audits && audits.length > 0 && !selectedAuditId && (
         <div className="space-y-3">
-          <h3 className="text-lg font-semibold">Audits précédents</h3>
+          <h3 className="text-lg font-semibold">{t.ProjectDetail.previousAudits}</h3>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {audits.map((audit) => (
               <Card
@@ -287,7 +287,7 @@ export function ProjectDetailPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium">
-                        {new Date(audit.createdAt).toLocaleDateString("fr-FR", {
+                        {new Date(audit.createdAt).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
                           day: "numeric",
                           month: "long",
                           year: "numeric",
@@ -296,15 +296,15 @@ export function ProjectDetailPage() {
                       {audit.summary && (
                         <div>
                           <p className="text-xs text-muted-foreground mt-1">
-                            Conformité : {audit.summary.tauxConformite}%
+                            {t.ProjectDetail.compliance} : {audit.summary.tauxConformite}%
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {audit.summary.pagesCount || 0} page(s) auditée(s)
+                            {t.ProjectDetail.pagesAudited(audit.summary.pagesCount || 0)}
                           </p>
                         </div>
                       )}
                     </div>
-                    <StatusBadge status={audit.status} />
+                    <StatusBadge status={audit.status} t={t} />
                   </div>
                 </CardContent>
               </Card>
@@ -322,7 +322,7 @@ export function ProjectDetailPage() {
             className="gap-1"
           >
             <ArrowLeft className="h-4 w-4" />
-            Retour aux audits
+            {t.ProjectDetail.backToAudits}
           </Button>
 
           {auditLoading ? (
@@ -333,7 +333,7 @@ export function ProjectDetailPage() {
             <AuditReport audit={selectedAudit} />
           ) : (
             <p className="text-center text-muted-foreground">
-              Audit introuvable
+              {t.ProjectDetail.auditNotFound}
             </p>
           )}
         </div>
@@ -347,10 +347,10 @@ export function ProjectDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                Habilitations
+                {t.ProjectDetail.permissions}
               </CardTitle>
               <CardDescription>
-                Gérez les utilisateurs ayant accès à ce projet
+                {t.ProjectDetail.permissionsDescription}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -399,8 +399,8 @@ export function ProjectDetailPage() {
                                 });
                                 toast.success(
                                   isAllowed
-                                    ? `Accès retiré pour ${u.prenom}`
-                                    : `Accès accordé à ${u.prenom}`
+                                    ? t.ProjectDetail.accessRemoved(u.prenom)
+                                    : t.ProjectDetail.accessGranted(u.prenom)
                                 );
                               } catch (error: any) {
                                 toast.error(error.message);
@@ -410,12 +410,12 @@ export function ProjectDetailPage() {
                             {isAllowed ? (
                               <>
                                 <UserMinus className="h-3 w-3" />
-                                Retirer
+                                {t.ProjectDetail.remove}
                               </>
                             ) : (
                               <>
                                 <UserPlus className="h-3 w-3" />
-                                Habiliter
+                                {t.ProjectDetail.authorize}
                               </>
                             )}
                           </Button>
@@ -425,7 +425,7 @@ export function ProjectDetailPage() {
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  Aucun autre utilisateur enregistré
+                  {t.ProjectDetail.noOtherUsers}
                 </p>
               )}
             </CardContent>
