@@ -3,8 +3,11 @@ import { Audit } from "../models/audit.model.js";
 import { Project } from "../models/project.model.js";
 import { runAudit, confirmAuth } from "../services/audit.service.js";
 import { generatePDF } from "../services/pdf.service.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 
 export async function auditRoutes(app: FastifyInstance) {
+  // Toutes les routes audits nécessitent une authentification
+  app.addHook("preHandler", authenticate);
   // POST /api/projects/:projectId/audits — Start a new audit for a project
   app.post<{ Params: { projectId: string } }>(
     "/api/projects/:projectId/audits",
