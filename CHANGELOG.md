@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 20-02-2026
+
+***Added***
+
+- Internationalization (i18n) system with French and English support
+- Centralized term files (fr.ts, en.ts) with common and per-page translation keys
+- I18n React context provider with localStorage-persisted locale preference
+- Language toggle button in header (FR/EN switching)
+- Dark mode toggle via Radix Switch in user dropdown menu
+- User dropdown menu (Radix DropdownMenu) on header avatar with logout action
+- Dropdown menu and switch Radix UI component wrappers
+- Dark mode theme hook with class-based Tailwind toggling and localStorage persistence
+- All frontend pages and components converted to use i18n terms (dashboard, login, register, project detail, project card, project form, user management, audit report, audit summary, criteria group)
+- Locale-aware date formatting throughout the application
+
 ## [0.11.0] - 20-02-2026
 
 ***Added***
