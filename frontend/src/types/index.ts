@@ -3,6 +3,42 @@ export interface AuthConfig {
   loginUrl?: string;
 }
 
+// ─── USER & AUTH ───
+
+export type UserRole = "admin" | "user";
+export type OrganisationType = "entreprise" | "particulier";
+
+export interface User {
+  id: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  organisation: OrganisationType;
+  role: UserRole;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface RegisterInput {
+  nom: string;
+  prenom: string;
+  email: string;
+  password: string;
+  organisation: OrganisationType;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+// ─── PROJECT ───
+
 export interface Project {
   id: string;
   name: string;
@@ -10,6 +46,8 @@ export interface Project {
   url: string;
   auth?: AuthConfig;
   pages?: string[];
+  createdBy?: string;
+  allowedUsers?: string[];
   createdAt: string;
   updatedAt: string;
 }
