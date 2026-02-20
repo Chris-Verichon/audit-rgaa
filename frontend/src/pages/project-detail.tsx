@@ -9,6 +9,8 @@ import {
   useAuditStatus,
   useConfirmAuth,
 } from "@/hooks/use-audits";
+import { useUsers, useUpdateProjectPermissions } from "@/hooks/use-users";
+import { useAuth } from "@/hooks/use-auth";
 import { AuditReport } from "@/components/audit/audit-report";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +31,9 @@ import {
   XCircle,
   Lock,
   LogIn,
+  Users,
+  UserPlus,
+  UserMinus,
 } from "lucide-react";
 
 function StatusBadge({ status }: { status: string }) {
@@ -79,6 +84,9 @@ export function ProjectDetailPage() {
   const { data: audits, isLoading: auditsLoading } = useProjectAudits(projectId);
   const startAudit = useStartAudit();
   const confirmAuth = useConfirmAuth();
+  const { user: currentUser, isAdmin } = useAuth();
+  const { data: allUsers } = useUsers();
+  const updatePermissions = useUpdateProjectPermissions();
 
   const [selectedAuditId, setSelectedAuditId] = useState<string | null>(null);
   const [runningAuditId, setRunningAuditId] = useState<string | null>(null);
@@ -330,6 +338,99 @@ export function ProjectDetailPage() {
           )}
         </div>
       )}
+
+      {/* Gestion des habilitations — visible pour l'admin ou le créateur */}
+      {project &&
+        (isAdmin || project.createdBy === currentUser?.id) &&
+        !selectedAuditId && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Habilitations
+              </CardTitle>
+              <CardDescription>
+                Gérez les utilisateurs ayant accès à ce projet
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {allUsers && allUsers.length > 0 ? (
+                <div className="space-y-2">
+                  {allUsers
+                    .filter((u) => u.id !== project.createdBy)
+                    .map((u) => {
+                      const isAllowed =
+                        project.allowedUsers?.includes(u.id) || false;
+
+                      return (
+                        <div
+                          key={u.id}
+                          className="flex items-center justify-between rounded-lg border px-3 py-2"
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                              {u.prenom[0]}
+                              {u.nom[0]}
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">
+                                {u.prenom} {u.nom}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {u.email}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant={isAllowed ? "destructive" : "outline"}
+                            size="sm"
+                            className="gap-1"
+                            disabled={updatePermissions.isPending}
+                            onClick={async () => {
+                              const current = project.allowedUsers || [];
+                              const newList = isAllowed
+                                ? current.filter((id) => id !== u.id)
+                                : [...current, u.id];
+
+                              try {
+                                await updatePermissions.mutateAsync({
+                                  projectId: project.id,
+                                  allowedUsers: newList,
+                                });
+                                toast.success(
+                                  isAllowed
+                                    ? `Accès retiré pour ${u.prenom}`
+                                    : `Accès accordé à ${u.prenom}`
+                                );
+                              } catch (error: any) {
+                                toast.error(error.message);
+                              }
+                            }}
+                          >
+                            {isAllowed ? (
+                              <>
+                                <UserMinus className="h-3 w-3" />
+                                Retirer
+                              </>
+                            ) : (
+                              <>
+                                <UserPlus className="h-3 w-3" />
+                                Habiliter
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      );
+                    })}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Aucun autre utilisateur enregistré
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        )}
     </div>
   );
 }

@@ -2,43 +2,100 @@ import {
   createRouter,
   createRoute,
   createRootRoute,
+  redirect,
 } from "@tanstack/react-router";
 import { Layout } from "@/components/layout/layout";
+import { AuthLayout } from "@/components/layout/auth-layout";
 import { DashboardPage } from "@/pages/dashboard";
 import { NewProjectPage } from "@/pages/new-project";
 import { ProjectDetailPage } from "@/pages/project-detail";
+import { LoginPage } from "@/pages/login";
+import { RegisterPage } from "@/pages/register";
+import { UserManagementPage } from "@/pages/user-management";
+import { getToken } from "@/lib/api";
 
-// Root route with layout
+// Root route
 const rootRoute = createRootRoute({
-  component: Layout,
+  component: AuthLayout,
 });
+
+// ─── Auth routes (public) ───
+
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: LoginPage,
+  beforeLoad: () => {
+    if (getToken()) {
+      throw redirect({ to: "/" });
+    }
+  },
+});
+
+const registerRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/register",
+  component: RegisterPage,
+  beforeLoad: () => {
+    if (getToken()) {
+      throw redirect({ to: "/" });
+    }
+  },
+});
+
+// ─── Protected layout ───
+
+const layoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "authenticated",
+  component: Layout,
+  beforeLoad: () => {
+    if (!getToken()) {
+      throw redirect({ to: "/login" });
+    }
+  },
+});
+
+// ─── Protected routes ───
 
 // Dashboard (index)
 const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => layoutRoute,
   path: "/",
   component: DashboardPage,
 });
 
 // Nouveau projet
 const newProjectRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => layoutRoute,
   path: "/projects/new",
   component: NewProjectPage,
 });
 
 // Détail projet
 const projectDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => layoutRoute,
   path: "/projects/$projectId",
   component: ProjectDetailPage,
 });
 
+// Gestion utilisateurs (admin)
+const userManagementRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/users",
+  component: UserManagementPage,
+});
+
 // Route tree
 const routeTree = rootRoute.addChildren([
-  indexRoute,
-  newProjectRoute,
-  projectDetailRoute,
+  loginRoute,
+  registerRoute,
+  layoutRoute.addChildren([
+    indexRoute,
+    newProjectRoute,
+    projectDetailRoute,
+    userManagementRoute,
+  ]),
 ]);
 
 // Router
